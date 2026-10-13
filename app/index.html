@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fa">
+    <meta name="description" content="A clear, contributor-friendly overview of Mona's team projects.">
+    <title>Project Pulse</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#projects-heading">Skip to team projects</a>
+    <main class="dashboard">
+      <header class="dashboard-header">
+        <p class="eyebrow">Mona’s team · project overview</p>
+        <h1>Project Pulse</h1>
+        <p class="dashboard-subtitle">A shared snapshot of what we’re building and where a helping hand can make a difference.</p>
+      </header>
+
+      <section class="projects-section" aria-labelledby="projects-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">The work in motion</p>
+            <h2 id="projects-heading">Team projects</h2>
+          </div>
+          <p class="section-note">Updates from across the team</p>
+        </div>
+        <p id="project-feedback" class="feedback" role="status" aria-live="polite">Loading project updates…</p>
+        <div id="project-list" class="project-grid" aria-busy="true"></div>
+      </section>
+    </main>
+
+    <script>
+      const projectList = document.querySelector("#project-list");
+      const feedback = document.querySelector("#project-feedback");
+
+      function addText(parent, tagName, className, text) {
+        const element = document.createElement(tagName);
+        if (className) element.className = className;
+        element.textContent = text;
+        parent.append(element);
+        return element;
+      }
+
+      function createProjectCard(project) {
+        const card = document.createElement("article");
+        card.className = "project-card";
+
+        const header = document.createElement("div");
+        header.className = "project-card-header";
+        const titleBlock = document.createElement("div");
+        titleBlock.className = "project-title-block";
+        addText(titleBlock, "h3", "project-name", project.name);
+        addText(titleBlock, "p", "project-owner", `Led by ${project.owner}`);
+        header.append(titleBlock);
+
+        const status = addText(header, "span", "badge status-badge", project.status);
+        status.setAttribute("aria-label", `Status: ${project.status}`);
+        card.append(header);
+
+        addText(card, "p", "project-summary", project.summary);
+
+        const activity = document.createElement("div");
+        activity.className = "project-detail";
+        addText(activity, "h4", "detail-label", "Recent activity");
+        addText(activity, "p", "detail-copy", project.recentActivity);
+        card.append(activity);
+
+        const priority = document.createElement("div");
+        priority.className = "priority-row";
+        addText(priority, "span", "detail-label", "Priority / risk");
+        const priorityBadge = addText(priority, "span", "badge priority-badge", project.priority);
+        priorityBadge.setAttribute("aria-label", `Priority or risk: ${project.priority}`);
+        if (project.priority.toLowerCase().includes("high")) priorityBadge.dataset.level = "high";
+        if (project.priority.toLowerCase().includes("low")) priorityBadge.dataset.level = "low";
+        card.append(priority);
+
+        return card;
+      }
+
+      async function loadProjects() {
+        try {
+          const response = await fetch("project-data.json");
+          if (!response.ok) throw new Error(`Project data request failed (${response.status})`);
+          const data = await response.json();
+          if (!data || !Array.isArray(data.projects)) {
+            throw new Error("Project data must contain a projects array.");
+          }
+
+          const projects = data.projects;
+          if (projects.length === 0) {
+            feedback.textContent = "No projects to show yet. Check back when the team has added an update.";
+            return;
+          }
+
+          const fragment = document.createDocumentFragment();
+          projects.forEach((project) => {
+            const requiredFields = ["name", "owner", "status", "recentActivity", "priority", "summary"];
+            if (!requiredFields.every((field) => typeof project[field] === "string" && project[field].trim())) {
+              throw new Error("A project is missing one or more required details.");
+            }
+            fragment.append(createProjectCard(project));
+          });
+          projectList.append(fragment);
+          feedback.textContent = `${projects.length} ${projects.length === 1 ? "project" : "projects"} on the pulse.`;
+        } catch (error) {
+          feedback.textContent = `Project updates couldn’t be loaded. ${error.message} Please try again later.`;
+          feedback.classList.add("feedback-error");
+        } finally {
+          projectList.setAttribute("aria-busy", "false");
+        }
+      }
+
+      loadProjects();
+    </script>
+  </body>
+</html>

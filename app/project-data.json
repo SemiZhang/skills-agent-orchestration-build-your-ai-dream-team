@@ -1,0 +1,44 @@
+{
+  "projects": [
+    {
+      "name": "Community Docs Refresh",
+      "owner": "Ari Chen",
+      "status": "Active",
+      "recentActivity": "The contributor setup guide was simplified and is ready for review.",
+      "priority": "Medium",
+      "summary": "Make it easier for new contributors to get started with clear, friendly documentation."
+    },
+    {
+      "name": "Accessibility Pass",
+      "owner": "Sam Rivera",
+      "status": "In progress",
+      "recentActivity": "Keyboard navigation checks are complete; color contrast fixes are underway.",
+      "priority": "High · needs review",
+      "summary": "Improve keyboard and screen-reader support across the team’s most-used project pages."
+    },
+    {
+      "name": "Release Notes Helper",
+      "owner": "Jordan Lee",
+      "status": "Planning",
+      "recentActivity": "The team collected feedback on a first draft of the release workflow.",
+      "priority": "Low",
+      "summary": "Help maintainers turn merged changes into concise, useful release notes."
+    },
+    {
+      "name": "Starter Templates",
+      "owner": "Morgan Patel",
+      "status": "Active",
+      "recentActivity": "A new template for small documentation fixes was added this week.",
+      "priority": "Medium",
+      "summary": "Create approachable starter tasks that help first-time contributors make an impact."
+    },
+    {
+      "name": "Issue Triage Guide",
+      "owner": "Casey Nguyen",
+      "status": "Needs attention",
+      "recentActivity": "The response-time checklist is waiting for maintainer feedback.",
+      "priority": "High · at risk",
+      "summary": "Give maintainers a shared, sustainable way to label and route incoming issues."
+    }
+  ]
+}
